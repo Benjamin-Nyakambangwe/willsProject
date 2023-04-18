@@ -1,0 +1,82 @@
+body {
+position: relative;
+width: 1280px;
+height: 720px;
+background: #E5E5E5;
+
+}
+
+form {
+position: absolute;
+width: 347px;
+height: 406px;
+left: 466px;
+top: 157px;
+}
+
+#sign_in_text{
+position: relative;
+top: -83px;
+font-family: 'Lexend Deca';
+font-style: normal;
+font-weight: 400;
+font-size: 64px;
+
+/* identical to box height */
+text-align: center;
+color: #224957;
+}
+
+#make_a_will_text{
+position: relative;
+top: -130px;
+font-family: 'Lexend Deca';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+/* identical to box height */
+text-align: center;
+color: #224957;
+}
+
+#username{
+position: relative;
+width: 300px;
+height: 45px;
+top: -120px;
+left:25px;
+background: #224957;
+border-radius: 10px;
+}
+
+#password{position: relative;
+width: 300px;
+height: 45px;
+left:25px;
+top: -100px;
+background: #224957;
+border-radius: 10px;}
+
+#forgot_passwd{
+top: -95px;
+left: 13px;
+position: relative;
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+/* identical to box height */
+color: #000000;
+
+}
+
+#submit_user_login{
+position: relative;
+width: 300px;
+height: 45px;
+left:25px;
+top: -90px;
+background: #20DF7F;
+box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+border-radius: 10px;}
+

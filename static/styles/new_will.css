@@ -1,0 +1,101 @@
+body {
+position: absolute;
+width: 1512px;
+height: 982px;
+margin: 0;
+background: #E5E5E5;
+
+}
+
+
+#side_bar
+{
+position: absolute;
+width: 280px;
+height: 982px;
+left: 0px;
+top: 0px;
+
+background: #F2F2F2;
+}
+
+#nav_options{
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+ text-decoration: none;
+padding: 0px;
+gap: 24px;
+
+position: absolute;
+width: 167px;
+height: 232px;
+left: 32px;
+top: 212px;
+}
+
+.active{
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 8px 24px 8px 16px;
+gap: 12px;
+color: white;
+ text-decoration: none;
+ text-transform: uppercase;
+  text-indent: 40px;
+font-family: 'Manrope';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 24px;
+
+width: 167px;
+height: 40px;
+
+background:  #224957;
+border-radius: 4px;
+
+/* Inside auto layout */
+
+flex: none;
+order: 0;
+flex-grow: 0;
+}
+
+
+.option_2{
+/* Auto layout */
+
+display: flex;
+flex-direction: row;
+ text-decoration: none;
+align-items: center;
+padding: 8px 24px 8px 16px;
+gap: 12px;
+background: #E5E5E5;
+color: black;
+text-transform: uppercase;
+text-indent: 26px;
+
+width: 167px;
+height: 40px;
+
+border-radius: 4px;
+
+/* Inside auto layout */
+
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+}
+
+#main_overview{
+position: relative;
+width: 1420px;
+height: 900px;
+left: 380px;
+top: 55px;
+}
+
