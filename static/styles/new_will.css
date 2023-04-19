@@ -99,3 +99,34 @@ left: 380px;
 top: 55px;
 }
 
+
+input[type=text], select, textarea {
+  background-color: #f2f2f2;
+  border: none;
+  padding: 10px;
+  margin: 5px 0;
+  width: 100%;
+}
+
+/* Set the font size of all form labels to 18px */
+label {
+  font-size: 18px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+/* Style the submit button */
+button[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Change the color of the submit button when hovered over */
+button[type=submit]:hover {
+  background-color: #45a049;
+}
+

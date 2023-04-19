@@ -3,9 +3,9 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .models import wills
-from .models import ChangeLog
+from .models import ChangeLog, TestChange
 from django.contrib.auth.decorators import login_required
-from .forms import wills_form
+from .forms import wills_form, newWillForm
 
 
 
@@ -25,17 +25,26 @@ def login_view(request):
 @login_required
 def landing_view(request):
     changelog = ChangeLog.objects.filter(will_owner=request.user)
-    return render(request, 'users_access/landing_page.html', {'data': changelog})
+    mymodel = TestChange.objects.get(will_owner=request.user)
+    history = mymodel.history.all()
+    print(history[1].lawyer)
+    # return render(request, 'my_template.html', {'mymodel': mymodel, 'history': history})
+    return render(request, 'users_access/landing_page.html', {'data': changelog, 'history': history})
 
 
 # @login_required
 def create_new_will(request):
     if request.method != 'POST':
-        form = wills_form()
+        # form = wills_form()
+        form = newWillForm()
         context = {'form': form}
         return render(request, 'users_access/new_will.html',context)
     else:
-        form = wills_form(data=request.POST)
+        form = newWillForm(data=request.POST)
         if form.is_valid():
-            form.save()
-            landing_view()
+            form.save() 
+            changelog = ChangeLog.objects.filter(will_owner=request.user)
+            mymodel = TestChange.objects.get(will_owner=request.user)
+            history = mymodel.history.all()
+            return render(request, 'users_access/landing_page.html', {'data': changelog, 'history': history})
+            # landing_view(request)

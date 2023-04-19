@@ -20,8 +20,9 @@
 </section>
 <section id="main_overview">
 <a href="#home" id="signed_will">SIGNED WILL</a>
-<a style="left:300px;text-indent: 60px;" href="#home" id="signed_will">WITNESSING VIDEO</a>
-<a style="left:600px;text-indent: 60px;" href="#home" id="signed_will">CREATE NEW WILL</a>
+<a style="left:300px;text-indent: 60px;" href="lobby" id="signed_will">WITNESSING VIDEO</a>
+<a style="left:600px;text-indent: 60px;" href="new_will" id="signed_will">CREATE NEW WILL</a>
+<!-- <a style="left:600px;text-indent: 60px;" href="edit_will" id="signed_will">EDIT WILL</a> -->
 <p id="last_30_text">In last 30 Days,</p>
 <p style="font-family: 'Manrope';
 font-style: normal;
@@ -36,7 +37,7 @@ font-size: 16px;
 line-height: 12px;
 color: #B3B3B3;" id="last_30_text">Monitor what have been changed, by who, when.. etc</p>
 </p>
-    <table >
+    <!-- <table >
   <tr>
     <th>Field Changed</th>
     <th>Old Value</th>
@@ -51,7 +52,43 @@ color: #B3B3B3;" id="last_30_text">Monitor what have been changed, by who, when.
     <td>{{data.timestamp}}</td>
   </tr>
         {%endfor%}
-</table>
+
+        <h1>Hello{{ history }}</h1>
+
+      </tr>
+      {%for history in history%}
+<tr>
+  <td>{{history}}</td>
+</tr>{%endfor%}
+
+</table> -->
+
+<table>
+      <thead>
+        <tr>
+          <!-- <th>Will Owner</th> -->
+          <!-- <th>Active Lawyer</th> -->
+          <!-- <th>Witness</th> -->
+          <th>Will</th>
+          <th>Hash</th>
+          <th>History</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for hist in history %}
+        <tr>
+            <!-- <td>{{ hist.will_owner }}</td> -->
+            <!-- <td>{{ hist.lawyer }}</td> -->
+            <!-- <td>{{ hist.excutor }}</td> -->
+            <td>{{ hist.my_field }}</td>
+            <td>{{ hist.my_field_hash }}</td>
+            <td>{{ hist}}</td>
+
+        </tr>
+          
+        {% endfor %}
+      </tbody>
+    </table>
 
 </section>
 </body>

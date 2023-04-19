@@ -3,10 +3,9 @@ from django.contrib.auth.models import User
 from django.utils.timezone import now
 import hashlib
 from tinymce import models as tinymce_models
+from simple_history.models import HistoricalRecords
 
-# Create your models here.
 
-# Create your models here.
 class wills(models.Model):
     """register of wills"""
     will_owner=models.ForeignKey(User, related_name='will_owner', on_delete=models.CASCADE,blank=True,null=True)
@@ -43,3 +42,28 @@ class test(models.Model):
 
     def __str__(self):
         return str(self.name)
+
+
+class TestChange(models.Model):
+    will_owner=models.ForeignKey(User, related_name='owner', on_delete=models.CASCADE,blank=True,null=True)
+    excutor=models.ForeignKey(User, related_name='witness', on_delete=models.CASCADE,blank=True,null=True)
+    lawyer=models.ForeignKey(User, related_name='lawyr', on_delete=models.CASCADE,blank=True,null=True)
+    my_field = tinymce_models.HTMLField()
+    my_field_hash = models.CharField(max_length=64, blank=True, null=True)
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return str(self.will_owner)
+        # return str(self.will_owner.username.capitalize() + "'s Will")
+
+
+    def save(self, *args, **kwargs):
+        if self.my_field:
+            new_hash = hashlib.sha256(self.my_field.encode('utf-8')).hexdigest()
+            if new_hash != self.my_field_hash:
+                print('Field Changed')
+            else:
+                print('Nothing Changed')
+            self.my_field_hash = new_hash
+        super(TestChange, self).save(*args, **kwargs)
+

@@ -21,6 +21,7 @@
 <section id="main_overview">
     <form action="" method="POST">
     {% csrf_token %}
+    {{form.media }}
     {{form.as_p }}
     <button id="save" type="submit" style="background-color: #B4CD93; color: white; padding: 10px;">Save</button>
 </form>
