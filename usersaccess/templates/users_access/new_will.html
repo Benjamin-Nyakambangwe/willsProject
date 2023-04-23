@@ -19,7 +19,7 @@
     <a style="text-indent: 43px; position: absolute; left: 32px; bottom: 120px;" class="active" href="#home">log out</a>
 </section>
 <section id="main_overview">
-    <form action="" method="POST">
+    <form action="" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{form.media }}
     {{form.as_p }}

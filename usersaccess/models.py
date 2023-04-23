@@ -48,14 +48,15 @@ class TestChange(models.Model):
     will_owner=models.ForeignKey(User, related_name='owner', on_delete=models.CASCADE,blank=True,null=True)
     excutor=models.ForeignKey(User, related_name='witness', on_delete=models.CASCADE,blank=True,null=True)
     lawyer=models.ForeignKey(User, related_name='lawyr', on_delete=models.CASCADE,blank=True,null=True)
-    my_field = tinymce_models.HTMLField()
+    my_field = tinymce_models.HTMLField(blank=True, null=True)
     my_field_hash = models.CharField(max_length=64, blank=True, null=True)
+    # emails = models.TextField(blank=True, null=True)
+    dc_image = models.ImageField(null=True, blank=True, upload_to="deathCertificates/")
     history = HistoricalRecords()
 
     def __str__(self):
         return str(self.will_owner)
         # return str(self.will_owner.username.capitalize() + "'s Will")
-
 
     def save(self, *args, **kwargs):
         if self.my_field:

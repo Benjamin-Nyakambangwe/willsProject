@@ -12,8 +12,11 @@
 <body>
 
 <section id="sign_in">
+{%if form.errors %}  
+<p>There was an error with your form</p>
+{%endif%}
 <form method="post">
-    <p id="sign_in_text">Sign in</p>
+    <p id="sign_in_text">Register Lawyer</p>
     <p id="make_a_will_text">Make a Will Online Zimbabwe - Secure & Simple</p>
 
     {% if messages %} 
@@ -24,22 +27,13 @@
 
     {% csrf_token %}
 
-    <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">Username</label>
-        <input type="text" class="form-control" name="username">
-    </div>
-    <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">Password</label>
-        <input type="text" class="form-control" name="password">
-    </div>
+    {{form.as_p}}
 
+
+<br/>
     <!-- <input type="submit" id="submit_user_login" value="Login"> -->
-    <input type="submit" value="Login">
-    <a class="option_2" href="{% url 'usersaccess:register' %}">Register</a>
-    <a class="option_2" href="{% url 'usersaccess:register_lawyer' %}">Register Lawyer</a>
+    <input type="submit" value="Register">
 </form>
-
-
 </section>
 </body>
 </html>

@@ -13,15 +13,20 @@
 <section id="side_bar">
     <div id="nav_options">
           <a class="active" href="#home">overview</a>
-          <a class="option_2" href="#home">Access rights</a>
-         <a style="text-indent: 46px;" class="option_2" href="#home">SETTINGS</a>
+          <a class="option_2" href="{% url 'usersaccess:logout' %}">Logout</a>
+         <a style="text-indent: 46px;" class="option_2" href="#home">{{user.username}}</a>
+         <a class="active" href="{% url 'usersaccess:render_will' %}">Download Will</a>
     </div>
     <a style="text-indent: 43px; position: absolute; left: 32px; bottom: 120px;" class="active" href="#home">log out</a>
 </section>
 <section id="main_overview">
 <a href="#home" id="signed_will">SIGNED WILL</a>
 <a style="left:300px;text-indent: 60px;" href="lobby" id="signed_will">WITNESSING VIDEO</a>
+{%if will_model.my_field is null%}
 <a style="left:600px;text-indent: 60px;" href="new_will" id="signed_will">CREATE NEW WILL</a>
+{%else%}
+<a style="left:600px;text-indent: 60px;" href="new_will" id="signed_will">EDIT WILL</a>
+{%endif%}
 <!-- <a style="left:600px;text-indent: 60px;" href="edit_will" id="signed_will">EDIT WILL</a> -->
 <p id="last_30_text">In last 30 Days,</p>
 <p style="font-family: 'Manrope';
@@ -63,32 +68,60 @@ color: #B3B3B3;" id="last_30_text">Monitor what have been changed, by who, when.
 
 </table> -->
 
-<table>
-      <thead>
-        <tr>
-          <!-- <th>Will Owner</th> -->
-          <!-- <th>Active Lawyer</th> -->
-          <!-- <th>Witness</th> -->
-          <th>Will</th>
-          <th>Hash</th>
-          <th>History</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for hist in history %}
-        <tr>
-            <!-- <td>{{ hist.will_owner }}</td> -->
-            <!-- <td>{{ hist.lawyer }}</td> -->
-            <!-- <td>{{ hist.excutor }}</td> -->
-            <td>{{ hist.my_field }}</td>
-            <td>{{ hist.my_field_hash }}</td>
-            <td>{{ hist}}</td>
 
-        </tr>
-          
-        {% endfor %}
-      </tbody>
-    </table>
+
+{%if user.is_staff%}
+
+<table>
+  <thead>
+    <tr>
+      <!-- <th>Will Owner</th> -->
+      <!-- <th>Active Lawyer</th> -->
+      <!-- <th>Witness</th> -->
+      <th>Client Name</th>
+      <th>Witness</th>
+      <th>Will</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for client in clients %}
+    <tr>
+        <!-- <td>{{ hist.will_owner }}</td> -->
+        <!-- <td>{{ hist.lawyer }}</td> -->
+        <!-- <td>{{ hist.excutor }}</td> -->
+        <td>{{ client.will_owner }}</td>
+        <td>{{ client.executor }}</td>
+        <td>{{ client.my_field }}</td>
+
+    </tr>
+      
+    {% endfor %}
+  </tbody>
+</table>
+{%else%}
+
+<table>
+  <thead>
+    <tr>
+      <th>Will</th>
+      <th>Hash</th>
+      <th>History</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for hist in history %}
+    <tr>
+        <td>{{ hist.my_field }}</td>
+        <td>{{ hist.my_field_hash }}</td>
+        <td>{{ hist}}</td>
+
+    </tr>
+      
+    {% endfor %}
+  </tbody>
+</table>
+{%endif%}
+
 
 </section>
 </body>
