@@ -34,3 +34,10 @@ class RegisterLawyerForm(UserCreationForm):
 	class Meta:
 		model = User
 		fields = ['username', 'first_name', 'last_name', 'email', 'is_staff','password1', 'password2']
+
+
+
+class dCertForm(ModelForm):
+	class Meta:
+		model=TestChange
+		fields = ['dc_image']

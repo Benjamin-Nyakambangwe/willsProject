@@ -6,12 +6,25 @@ from django.urls import reverse
 from .models import wills
 from .models import ChangeLog, TestChange
 from django.contrib.auth.decorators import login_required
-from .forms import wills_form, newWillForm, RegisterForm, RegisterLawyerForm
+from .forms import wills_form, newWillForm, RegisterForm, RegisterLawyerForm, dCertForm
 from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from PIL import Image
 from django.contrib.auth.forms import UserCreationForm
+from django.core.mail import EmailMessage
+import mimetypes
+from django.core.files.base import ContentFile
 
+
+import os
+import io
+from django.core.files import File
+from django.shortcuts import get_object_or_404
+from django.views.generic import View
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.utils import ImageReader
+from reportlab.pdfgen import canvas
+from django.conf import settings
 
 from django.template.loader import get_template
 from xhtml2pdf import pisa
@@ -124,35 +137,177 @@ def create_new_will(request):
             # landing_view(request)def image_to_pdf(request):
 
 
-def image_to_pdf(request):
-    # Open the image file
-    img = Image.open('path/to/image.jpg')
-    
-    # Create a new PDF file and canvas
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="image.pdf"'
-    pdf_canvas = canvas.Canvas(response)
-    
-    # Get the size of the image and calculate the aspect ratio
-    width, height = img.size
-    aspect_ratio = height / width
-    
-    # Set the size of the PDF canvas to match the image size
-    pdf_canvas.setPageSize((width, height))
-    
-    # Draw the image on the PDF canvas
-    pdf_canvas.drawImage(img, 0, 0, width, height)
-    
-    # Save the PDF file to a model field
-    my_model = MyModel.objects.create()
-    my_model.my_file_field.save('image.pdf', response)
-    
-    # Close the canvas
-    pdf_canvas.save()
-    
-    return response
+# @login_required
+def edit_will_view(request, id):
+    will = TestChange.objects.get(pk=id)
+    form = newWillForm(request.POST or None, instance=will)
+    if form.is_valid():
+        form.save() 
+        if request.user.is_staff:
+            mymodel = TestChange.objects.filter(lawyer=request.user)
+            if mymodel.exists():
+                # history = mymodel.history.all()
+                print(mymodel[0].lawyer)
+                # return render(request, 'my_template.html', {'mymodel': mymodel, 'history': history})
+                return render(request, 'users_access/landing_page.html', {'clients': mymodel})
+            else:
+                return render(request, 'users_access/landing_page.html', {})
+        else:
+            try:
+                mymodel = TestChange.objects.get(will_owner=request.user)
+                history = mymodel.history.all()
+                print(history)
+                # return render(request, 'my_template.html', {'mymodel': mymodel, 'history': history})
+                return render(request, 'users_access/landing_page.html', {'history': history, 'will_model': mymodel})
+            
+            except TestChange.DoesNotExist:
+                return render(request, 'users_access/landing_page.html', {})
+    return render(request, 'users_access/edit_will.html', {'will':will, 'form': form})
 
 
+
+# @login_required
+def edit_own_will_view(request):
+    will = TestChange.objects.get(will_owner=request.user)
+    form = newWillForm(request.POST or None, instance=will)
+    if form.is_valid():
+        form.save() 
+        if request.user.is_staff:
+            mymodel = TestChange.objects.filter(lawyer=request.user)
+            if mymodel.exists():
+                # history = mymodel.history.all()
+                print(mymodel[0].lawyer)
+                # return render(request, 'my_template.html', {'mymodel': mymodel, 'history': history})
+                return render(request, 'users_access/landing_page.html', {'clients': mymodel})
+            else:
+                return render(request, 'users_access/landing_page.html', {})
+        else:
+            try:
+                mymodel = TestChange.objects.get(will_owner=request.user)
+                history = mymodel.history.all()
+                print(history)
+                # return render(request, 'my_template.html', {'mymodel': mymodel, 'history': history})
+                return render(request, 'users_access/landing_page.html', {'history': history, 'will_model': mymodel})
+            
+            except TestChange.DoesNotExist:
+                return render(request, 'users_access/landing_page.html', {})
+    return render(request, 'users_access/edit_will.html', {'will':will, 'form': form})
+
+
+
+
+def handleDC(request, id):
+    will = TestChange.objects.get(pk=id)
+    form = dCertForm(request.POST or None, request.FILES or None, instance=will)
+    if form.is_valid():
+        print('form is valid')
+        form.save()
+        print(will.dc_image)
+
+        #CONVERT THE SAVED DC IMAGE TO PDF
+        image_path = os.path.join(settings.MEDIA_ROOT, str(will.dc_image))
+        # Open the image file as a binary stream
+        with open(image_path, 'rb') as image_file:
+            # Create an ImageReader object from the binary stream
+            image_reader = ImageReader(image_file)
+            # Create a buffer to store the PDF data
+            buffer = io.BytesIO()
+            # Create a canvas and draw the image onto it
+            pdf_canvas = canvas.Canvas(buffer, pagesize=letter)
+            pdf_canvas.drawImage(image_reader, 0, 0, width=letter[0], height=letter[1])
+            pdf_canvas.save()
+            # Get the PDF data from the buffer and save it to the model object
+            pdf_file = File(buffer)
+            # my_model = TestChange.objects.get(pk=4)
+            will.dc_pdf.save('my.pdf', pdf_file)
+
+
+
+            my_data = will.my_field
+            user = will.will_owner
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+
+            template = get_template('users_access/will_pdf.html')
+            html = template.render({'my_data': my_data, 'user': user})
+
+            pdf_data = io.BytesIO()
+            pdf = pisa.CreatePDF(html, dest=pdf_data)
+
+            if not pdf.err:
+                # Reset the pointer to the beginning of the BytesIO object
+                pdf_data.seek(0)
+
+                # Save the PDF to the model field
+                will.will_pdf.save('mypdf.pdf', ContentFile(pdf_data.getvalue()))
+
+                # Close the BytesIO object to free up memory
+                pdf_data.close()
+
+            #     # Return a response with the PDF
+            #     response = HttpResponse(pdf_data.getvalue(), content_type='application/pdf')
+            #     response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+            #     return response
+            # else:
+            #     # Handle the PDF creation error
+            #     error_message = 'Error creating PDF: %s' % pdf.err
+            #     return HttpResponse(error_message)
+
+            email_list = will.emails.split(',')
+            if len(email_list) == 3:
+                email1, email2, email3 = [e.strip() for e in email_list]
+
+            email = EmailMessage(
+            'Subject',
+            'This is my message',
+            'benjaminnyakambangwe@gmail.com',
+            [email1, email2, email3],
+            reply_to=['benjaminnyakambngwe@gmail.com'],
+        )
+            file = will.will_pdf
+            print(f"file type: {type(file)}, file value: {file}")
+            if file:
+                content_type, encoding = mimetypes.guess_type(file.name)
+                email.attach(file.name, file.read(), content_type)
+            email.send()
+            print('email sent')
+
+        mymodel = TestChange.objects.filter(lawyer=request.user)
+        if mymodel.exists():
+            print(mymodel[0].lawyer)
+            return render(request, 'users_access/landing_page.html', {'clients': mymodel})
+        else:
+            
+            return render(request, 'users_access/landing_page.html', {})
+    print(form.errors)
+    print('form is not valid')
+    return render(request, 'users_access/handle_dc.html', {'will':will, 'form': form})
+
+
+
+
+class ImageToPDFView(View):
+    def get(self, request):
+
+        image_path = os.path.join(settings.MEDIA_ROOT, 'guest_posting_image.jpg')
+        # Open the image file as a binary stream
+        with open(image_path, 'rb') as image_file:
+            # Create an ImageReader object from the binary stream
+            image_reader = ImageReader(image_file)
+            # Create a buffer to store the PDF data
+            buffer = io.BytesIO()
+            # Create a canvas and draw the image onto it
+            pdf_canvas = canvas.Canvas(buffer, pagesize=letter)
+            pdf_canvas.drawImage(image_reader, 0, 0, width=letter[0], height=letter[1])
+            pdf_canvas.save()
+            # Get the PDF data from the buffer and save it to the model object
+            pdf_file = File(buffer)
+            my_model = TestChange.objects.get(pk=2)
+            my_model.dc_pdf.save('my.pdf', pdf_file)
+            # Return the PDF file as an attachment for download
+            response = HttpResponse(pdf_file.read(), content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename=my.pdf'
+            return response
 
 
 @login_required()
@@ -175,6 +330,16 @@ def render_will_view(request):
     
     # if PDF creation failed, return an error message
     return HttpResponse('Error creating PDF: %s' % pdf.err)
+
+
+
+@login_required
+def new_lobby(request):
+    
+    return render(request, 'base/lobby.html', {})
+
+# def room(request):
+#     return render(request, 'base/room.html')
 
 
 

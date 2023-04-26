@@ -1,0 +1,32 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/landing_page.css' %}">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>New Will</title>
+</head>
+<body>
+<section id="side_bar">
+    <div id="nav_options">
+          <a class="active" href="#home">New WIll</a>
+          <a class="option_2" href="#home">Access rights</a>
+         <a style="text-indent: 46px;" class="option_2" href="#home">SETTINGS</a>
+    </div>
+    <a style="text-indent: 43px; position: absolute; left: 32px; bottom: 120px;" class="active" href="#home">log out</a>
+</section>
+<section id="main_overview">
+    <form action="" method="POST">
+    {% csrf_token %}
+    {{form.media }}
+    {{form.as_p }}
+    <button id="save" type="submit" style="background-color: #B4CD93; color: white; padding: 10px;">Save</button>
+</form>
+
+
+</section>
+</body>
+</html>

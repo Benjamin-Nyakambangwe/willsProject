@@ -10,22 +10,27 @@
     <title>Landing Page</title>
 </head>
 <body>
+  <div style="
+    display: grid;
+    grid-template-columns: repeat(1fr, 3fr);
+    ">
 <section id="side_bar">
     <div id="nav_options">
-          <a class="active" href="#home">overview</a>
-          <a class="option_2" href="{% url 'usersaccess:logout' %}">Logout</a>
-         <a style="text-indent: 46px;" class="option_2" href="#home">{{user.username}}</a>
-         <a class="active" href="{% url 'usersaccess:render_will' %}">Download Will</a>
+          <a class="active" href="/" style="text-align: center;">overview</a>
+          <a class="option_2" href="{% url 'usersaccess:logout' %}" style="text-align: center;">Logout</a>
+         <a style="text-indent: 46px;" class="option_2" href="#home" style="text-align: center;">{{user.username}}</a>
+         <a class="active" href="{% url 'usersaccess:render_will' %}" style="text-align: center;">Download Will</a>
+         <!-- <a class="active" href="{% url 'usersaccess:image-to-pdf' %}">Download Will</a> -->
     </div>
-    <a style="text-indent: 43px; position: absolute; left: 32px; bottom: 120px;" class="active" href="#home">log out</a>
+    <!-- <a style="text-indent: 43px; position: absolute; left: 32px; bottom: 120px;" class="active" href="#home">log out</a> -->
 </section>
 <section id="main_overview">
-<a href="#home" id="signed_will">SIGNED WILL</a>
-<a style="left:300px;text-indent: 60px;" href="lobby" id="signed_will">WITNESSING VIDEO</a>
+<!-- <a href="#home" id="signed_will">SIGNED WILL</a> -->
+<a style="left:300px;text-indent: 60px;" href="{%url 'usersaccess:lobby' %}" id="signed_will">WITNESSING VIDEO</a>
 {%if will_model.my_field is null%}
 <a style="left:600px;text-indent: 60px;" href="new_will" id="signed_will">CREATE NEW WILL</a>
 {%else%}
-<a style="left:600px;text-indent: 60px;" href="new_will" id="signed_will">EDIT WILL</a>
+<a style="left:600px;text-indent: 60px;" href="{%url 'usersaccess:edit_own_will' %}" id="signed_will">EDIT WILL</a>
 {%endif%}
 <!-- <a style="left:600px;text-indent: 60px;" href="edit_will" id="signed_will">EDIT WILL</a> -->
 <p id="last_30_text">In last 30 Days,</p>
@@ -79,8 +84,10 @@ color: #B3B3B3;" id="last_30_text">Monitor what have been changed, by who, when.
       <!-- <th>Active Lawyer</th> -->
       <!-- <th>Witness</th> -->
       <th>Client Name</th>
-      <th>Witness</th>
+      <!-- <th>Witness</th> -->
       <th>Will</th>
+      <th>Options</th>
+
     </tr>
   </thead>
   <tbody>
@@ -90,8 +97,13 @@ color: #B3B3B3;" id="last_30_text">Monitor what have been changed, by who, when.
         <!-- <td>{{ hist.lawyer }}</td> -->
         <!-- <td>{{ hist.excutor }}</td> -->
         <td>{{ client.will_owner }}</td>
-        <td>{{ client.executor }}</td>
-        <td>{{ client.my_field }}</td>
+        <!-- <td>{{ client.executor }}</td> -->
+        <td>{% with client.my_field.split as word_list %}
+    {% for word in word_list|slice:":5" %}
+        {{ word|safe }}
+    {% endfor %}
+{% endwith %}</td>
+        <td><a href="{%url 'usersaccess:edit_will' client.id %}">Edit Will</a>   <a href="{% url 'usersaccess:handle_dc' client.id %}">Upload DC</a></td>
 
     </tr>
       
@@ -124,5 +136,6 @@ color: #B3B3B3;" id="last_30_text">Monitor what have been changed, by who, when.
 
 
 </section>
+</div>
 </body>
 </html>

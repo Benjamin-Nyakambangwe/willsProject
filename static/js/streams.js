@@ -21,7 +21,7 @@ let joinAndDisplayLocalStream = async () => {
         UID = await client.join(APP_ID, CHANNEL, TOKEN, UID)
     }catch(error){
         console.error(error)
-        window.open('/lobby', '_self')
+        window.open('/', '_self')
     }
     
     localTracks = await AgoraRTC.createMicrophoneAndCameraTracks()
@@ -78,7 +78,7 @@ let leaveAndRemoveLocalStream = async () => {
     await client.leave()
     //This is somewhat of an issue because if user leaves without actaull pressing leave button, it will not trigger
     deleteMember()
-    window.open('/lobby', '_self')
+    window.open('/', '_self')
 }
 
 let toggleCamera = async (e) => {

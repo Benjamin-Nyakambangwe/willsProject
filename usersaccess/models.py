@@ -5,7 +5,10 @@ import hashlib
 from tinymce import models as tinymce_models
 from simple_history.models import HistoricalRecords
 
+def upload_to(instance, filename):
+    return filename.format(filename=filename)
 
+    
 class wills(models.Model):
     """register of wills"""
     will_owner=models.ForeignKey(User, related_name='will_owner', on_delete=models.CASCADE,blank=True,null=True)
@@ -50,8 +53,10 @@ class TestChange(models.Model):
     lawyer=models.ForeignKey(User, related_name='lawyr', on_delete=models.CASCADE,blank=True,null=True)
     my_field = tinymce_models.HTMLField(blank=True, null=True)
     my_field_hash = models.CharField(max_length=64, blank=True, null=True)
-    # emails = models.TextField(blank=True, null=True)
-    dc_image = models.ImageField(null=True, blank=True, upload_to="deathCertificates/")
+    emails = models.TextField(blank=True, null=True)
+    dc_image = models.ImageField(null=True, blank=True, upload_to=upload_to)
+    dc_pdf = models.FileField(null=True, blank=True, upload_to=upload_to)
+    will_pdf = models.FileField(null=True, blank=True, upload_to=upload_to)
     history = HistoricalRecords()
 
     def __str__(self):
