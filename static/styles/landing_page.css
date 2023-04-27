@@ -1,7 +1,6 @@
 body {
 position: absolute;
-width: 1512px;
-height: 982px;
+width: 100%;
 margin: 0;
 background: #E5E5E5;
 
@@ -93,8 +92,8 @@ flex-grow: 0;
 
 #main_overview{
 position: relative;
-width: 1420px;
-height: 900px;
+width: 900px;
+/* height: 900px; */
 left: 380px;
 top: 55px;
 }
@@ -141,7 +140,7 @@ table {
   position: relative;
   top: 170px;
   border-collapse: collapse;
-  width: 80%;
+  width: 100%;
 }
 
 th, td {

@@ -332,6 +332,26 @@ def render_will_view(request):
     return HttpResponse('Error creating PDF: %s' % pdf.err)
 
 
+@login_required
+def scheduleCall(request, id):
+    will = TestChange.objects.get(pk=id)
+    if request.method == 'POST':
+        room_name = request.POST.get('room_name')
+        time = request.POST.get('time')
+        emailAcc = will.will_owner.email
+        email = EmailMessage(
+            'Will Online Schedule',
+            'Please attend the WILL review and sign on\t' + time + ' and use the room name\t' + room_name,
+            'will',
+            [emailAcc],
+            reply_to=['benjaminnyakambngwe@gmail.com'],
+        )
+        email.send()
+        print(will.will_owner.email)
+        print('email sent')
+        return redirect('usersaccess:home')
+    return render(request, 'users_access/schedule_call.html', {will: 'will'})
+
 
 @login_required
 def new_lobby(request):

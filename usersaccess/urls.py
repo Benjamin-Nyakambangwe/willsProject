@@ -16,6 +16,7 @@ urlpatterns = [
     path('render_will', views.render_will_view, name='render_will'),
     path('image-to-pdf', ImageToPDFView.as_view(), name='image-to-pdf'),
     path('handle_dc/<id>', views.handleDC, name='handle_dc'),
+    path('schedule_call/<id>', views.scheduleCall, name='schedule_call'),
 
     path('lobby', views.new_lobby, name='lobby'),
 
