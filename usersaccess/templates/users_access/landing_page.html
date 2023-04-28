@@ -21,20 +21,30 @@
           <a class="active" href="/" style="text-align: center;">overview</a>
           <a class="option_2" href="{% url 'usersaccess:logout' %}" style="text-align: center;">Logout</a>
          <a style="text-indent: 46px;" class="option_2" href="#home" style="text-align: center;">{{user.username}}</a>
+         {% if not user.userprofile.is_witness %}
          <a class="active" href="{% url 'usersaccess:render_will' %}" style="text-align: center;">Download Will</a>
-         <!-- <a class="active" href="{% url 'usersaccess:image-to-pdf' %}">Download Will</a> -->
+         {%endif%}
     </div>
     <!-- <a style="text-indent: 43px; position: absolute; left: 32px; bottom: 120px;" class="active" href="#home">log out</a> -->
 </section>
 <section id="main_overview">
-<!-- <a href="#home" id="signed_will">SIGNED WILL</a> -->
+  {% if not user.userprofile.is_witness %}
+  {%if not use.is_staff%}
+<a id="signed_will" href="{% url 'usersaccess:owner_sign'%}"> Owner Sign Will</a>
+{%endif%}
+{%else%}
+<a id="signed_will" href="{% url 'usersaccess:executor_sign'%}">Witness Sign Will</a>
+{%endif%}
 <a style="left:300px;text-indent: 60px;" href="{%url 'usersaccess:lobby' %}" id="signed_will">WITNESSING VIDEO</a>
+{% if not user.userprofile.is_witness %}
 {%if will_model.my_field is null%}
 <a style="left:600px;text-indent: 60px;" href="new_will" id="signed_will">CREATE NEW WILL</a>
 {%else%}
 <a style="left:600px;text-indent: 60px;" href="{%url 'usersaccess:edit_own_will' %}" id="signed_will">EDIT WILL</a>
 {%endif%}
+{%endif%}
 <!-- <a style="left:600px;text-indent: 60px;" href="edit_will" id="signed_will">EDIT WILL</a> -->
+
 <p id="last_30_text">In last 30 Days,</p>
 <p style="font-family: 'Manrope';
 font-style: normal;
@@ -107,15 +117,19 @@ color: #B3B3B3;" id="last_30_text">Monitor what have been changed, by who, when.
 {% endwith %}</td>
         <td><button type="button" class="btn btn-info"><a href="{%url 'usersaccess:edit_will' client.id %}">Edit Will</a></button> 
           <button type="button" class="btn btn-info"><a href="{% url 'usersaccess:handle_dc' client.id %}">Upload DC</a></button>
-          <button type="button" class="btn btn-info"><a href="{% url 'usersaccess:schedule_call' client.id %}">Schedule Call</a></button>  </td>
+          <button type="button" class="btn btn-info"><a href="{% url 'usersaccess:schedule_call' client.id %}">Schedule Call</a></button>  
+          <button type="button" class="btn btn-info"><a href="{% url 'usersaccess:lawyer_sign' client.id %}">Sign Will</a></button>  </td>
+        </td>
 
     </tr>
       
     {% endfor %}
   </tbody>
 </table>
-{%else%}
+{%elif user.userprofile.is_witness%}
 
+YOU ARE WITNESS
+{%else%}
 <table>
   <thead>
     <tr>

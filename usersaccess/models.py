@@ -57,6 +57,9 @@ class TestChange(models.Model):
     dc_image = models.ImageField(null=True, blank=True, upload_to=upload_to)
     dc_pdf = models.FileField(null=True, blank=True, upload_to=upload_to)
     will_pdf = models.FileField(null=True, blank=True, upload_to=upload_to)
+    will_owner_sign = models.CharField(max_length=200, blank=True, null=True)
+    executor_sign = models.CharField(max_length=200, blank=True, null=True)
+    lawyer_sign = models.CharField(max_length=200, blank=True, null=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -73,3 +76,10 @@ class TestChange(models.Model):
             self.my_field_hash = new_hash
         super(TestChange, self).save(*args, **kwargs)
 
+
+
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    is_witness = models.BooleanField(blank=True, null=True)

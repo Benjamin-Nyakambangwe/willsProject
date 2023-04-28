@@ -6,7 +6,7 @@ from django.urls import reverse
 from .models import wills
 from .models import ChangeLog, TestChange
 from django.contrib.auth.decorators import login_required
-from .forms import wills_form, newWillForm, RegisterForm, RegisterLawyerForm, dCertForm
+from .forms import wills_form, newWillForm, RegisterForm, RegisterLawyerForm, dCertForm, RegisterExecutorForm, ownerSignWillForm, executorSignWillForm, lawyerSignWillForm
 from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from PIL import Image
@@ -85,6 +85,24 @@ def register_lawyer_view(request):
     else:
         form = RegisterLawyerForm()
     return render(request, 'users_access/register_lawyer.html', {
+        'form':form,
+    })
+
+
+def register_executor_view(request):
+    if request.method == 'POST':
+        form = RegisterExecutorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            messages.success(request, ('Registration was successfull'))
+            return(redirect('usersaccess:home'))
+    else:
+        form = RegisterExecutorForm()
+    return render(request, 'users_access/register_executor.html', {
         'form':form,
     })
 
@@ -364,6 +382,30 @@ def new_lobby(request):
 
 
 
+def executor_sign_view(request):
+    will = TestChange.objects.get(excutor=request.user)
+    form = executorSignWillForm(request.POST or None, instance=will)
+    if form.is_valid():
+        form.save() 
+        return redirect('usersaccess:home')
+    return render(request, 'users_access/executor_sign.html', {'will':will, 'form': form})
 
+
+def owner_sign_view(request):
+    will = TestChange.objects.get(will_owner=request.user)
+    form = ownerSignWillForm(request.POST or None, instance=will)
+    if form.is_valid():
+        form.save() 
+        return redirect('usersaccess:home')
+    return render(request, 'users_access/owner_sign.html', {'will':will, 'form': form})
+
+
+def lawyer_sign_view(request, id):
+    will = TestChange.objects.get(pk=id)
+    form = ownerSignWillForm(request.POST or None, instance=will)
+    if form.is_valid():
+        form.save() 
+        return redirect('usersaccess:home')
+    return render(request, 'users_access/lawyer_sign.html', {'will':will, 'form': form})
 
 
