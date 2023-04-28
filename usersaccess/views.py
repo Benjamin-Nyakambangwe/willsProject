@@ -280,8 +280,8 @@ def handleDC(request, id):
                 email1, email2, email3 = [e.strip() for e in email_list]
 
             email = EmailMessage(
-            'Subject',
-            'This is my message',
+            'Will Attachment',
+            'Attached below is the will for your relative that just died',
             'benjaminnyakambangwe@gmail.com',
             [email1, email2, email3],
             reply_to=['benjaminnyakambngwe@gmail.com'],
