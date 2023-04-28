@@ -58,13 +58,13 @@ class newWillForm(ModelForm):
 
     class Meta:
         model = TestChange
-        fields = ['will_owner', 'excutor', 'lawyer', 'my_field', 'dc_image']
+        fields = ['will_owner', 'excutor', 'lawyer', 'emails', 'my_field', 'dc_image']
 
         widgets = {
             'will_owner': forms.Select(attrs={'class': 'form-control'}),
             'excutor': forms.Select(attrs={'class': 'form-control'}),
             'lawyer': forms.Select(attrs={'class': 'form-control'}),
-            # 'my_field': forms.TextInput(attrs={'class': 'form-control'}),
+            'emails': forms.TextInput(attrs={'class': 'form-control'}),
             'dc_image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 

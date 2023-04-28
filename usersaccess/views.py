@@ -160,6 +160,8 @@ def edit_will_view(request, id):
     will = TestChange.objects.get(pk=id)
     form = newWillForm(request.POST or None, instance=will)
     if form.is_valid():
+        if will.will_owner_sign is not None:
+            return redirect('usersaccess:home')
         form.save() 
         if request.user.is_staff:
             mymodel = TestChange.objects.filter(lawyer=request.user)
@@ -189,6 +191,8 @@ def edit_own_will_view(request):
     will = TestChange.objects.get(will_owner=request.user)
     form = newWillForm(request.POST or None, instance=will)
     if form.is_valid():
+        if will.will_owner_sign is not None:
+            return redirect('usersaccess:home')
         form.save() 
         if request.user.is_staff:
             mymodel = TestChange.objects.filter(lawyer=request.user)
@@ -357,11 +361,12 @@ def scheduleCall(request, id):
         room_name = request.POST.get('room_name')
         time = request.POST.get('time')
         emailAcc = will.will_owner.email
+        emailAcc2 = will.excutor.email
         email = EmailMessage(
             'Will Online Schedule',
             'Please attend the WILL review and sign on\t' + time + ' and use the room name\t' + room_name,
             'will',
-            [emailAcc],
+            [emailAcc, emailAcc2],
             reply_to=['benjaminnyakambngwe@gmail.com'],
         )
         email.send()
@@ -402,7 +407,7 @@ def owner_sign_view(request):
 
 def lawyer_sign_view(request, id):
     will = TestChange.objects.get(pk=id)
-    form = ownerSignWillForm(request.POST or None, instance=will)
+    form = lawyerSignWillForm(request.POST or None, instance=will)
     if form.is_valid():
         form.save() 
         return redirect('usersaccess:home')
