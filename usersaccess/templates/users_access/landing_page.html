@@ -59,6 +59,16 @@ font-size: 16px;
 line-height: 12px;
 color: #B3B3B3;" id="last_30_text">Monitor what have been changed, by who, when.. etc</p>
 </p>
+{% if messages %} 
+{% for message in messages%} 
+<p style="font-family: 'Manrope';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 28px;
+color: greenyellow;" id="last_30_text">{{message}}</p>
+{%endfor%}
+{%endif%}
     <!-- <table >
   <tr>
     <th>Field Changed</th>
@@ -115,8 +125,10 @@ color: #B3B3B3;" id="last_30_text">Monitor what have been changed, by who, when.
         {{ word|safe }}
     {% endfor %}
 {% endwith %}</td>
+
         <td><button type="button" class="btn btn-info"><a href="{%url 'usersaccess:edit_will' client.id %}">Edit Will</a></button> 
-          <button type="button" class="btn btn-info"><a href="{% url 'usersaccess:handle_dc' client.id %}">Upload DC</a></button>
+          <button type="button" class="btn btn-info"><a href="{% url 'usersaccess:image_to_text' client.id%}">Upload DC</a></button>
+          <!-- <button type="button" class="btn btn-info"><a href="{% url 'usersaccess:handle_dc' client.id %}">Upload DC</a></button> -->
           <button type="button" class="btn btn-info"><a href="{% url 'usersaccess:schedule_call' client.id %}">Schedule Call</a></button>  
           <button type="button" class="btn btn-info"><a href="{% url 'usersaccess:lawyer_sign' client.id %}">Sign Will</a></button>  </td>
         </td>

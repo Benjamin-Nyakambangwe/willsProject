@@ -266,14 +266,6 @@ def handleDC(request, id):
                 # Close the BytesIO object to free up memory
                 pdf_data.close()
 
-            #     # Return a response with the PDF
-            #     response = HttpResponse(pdf_data.getvalue(), content_type='application/pdf')
-            #     response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
-            #     return response
-            # else:
-            #     # Handle the PDF creation error
-            #     error_message = 'Error creating PDF: %s' % pdf.err
-            #     return HttpResponse(error_message)
 
             email_list = will.emails.split(',')
             if len(email_list) == 3:
@@ -414,3 +406,93 @@ def lawyer_sign_view(request, id):
     return render(request, 'users_access/lawyer_sign.html', {'will':will, 'form': form})
 
 
+import requests
+from django.shortcuts import render
+from django.http import HttpResponse
+
+def image_to_text(request, id):
+    will = TestChange.objects.get(pk=id)
+    if request.method == 'POST':
+        # Get the image file from the POST request
+        image_file = request.FILES.get('image_file')
+        if not image_file:
+            return HttpResponse('No image file provided.')
+        
+        # Set the OCR Space API endpoint and parameters
+        api_url = 'https://api.ocr.space/parse/image'
+        api_key = 'K81252015588957'
+        payload = {
+            'apikey': api_key,
+            'isOverlayRequired': False,
+            'language': 'eng', # Specify the language of the text in the image
+        }
+        
+        # Send the image file to OCR Space for processing
+        response = requests.post(api_url, files={'image': image_file}, data=payload)
+        if response.status_code != 200:
+            return HttpResponse('Error processing image.')
+        
+        # Extract the text from the OCR Space response
+        response_data = response.json()
+        if response_data['OCRExitCode'] != 1:
+            return HttpResponse('Error extracting text from image.')
+        else:
+            text = response_data['ParsedResults'][0]['ParsedText']
+            will.dc_text = text
+            will.save()
+
+            my_set = {"PLACE OF DEATH", "place of death", "CERTIFICATE OF DEATH", "certificate of death", "DATE OF DEATH","date of death"}
+
+            if any(substring in will.dc_text for substring in my_set):
+                print('VALID DEATH CERTIFICATE')
+                my_data = will.my_field
+                user = will.will_owner
+                response = HttpResponse(content_type='application/pdf')
+                response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+
+                template = get_template('users_access/will_pdf.html')
+                html = template.render({'my_data': my_data, 'user': user})
+
+                pdf_data = io.BytesIO()
+                pdf = pisa.CreatePDF(html, dest=pdf_data)
+
+                if not pdf.err:
+                    # Reset the pointer to the beginning of the BytesIO object
+                    pdf_data.seek(0)
+
+                    # Save the PDF to the model field
+                    will.will_pdf.save('mypdf.pdf', ContentFile(pdf_data.getvalue()))
+
+                    # Close the BytesIO object to free up memory
+                    pdf_data.close()
+                
+                email_list = will.emails.split(',')
+                if len(email_list) == 3:
+                    email1, email2, email3 = [e.strip() for e in email_list]
+
+                email = EmailMessage(
+                'Will Attachment',
+                'Attached below is the will for your relative that just died',
+                'benjaminnyakambangwe@gmail.com',
+                [email1, email2, email3],
+                reply_to=['benjaminnyakambngwe@gmail.com'],
+            )
+                file = will.will_pdf
+                print(f"file type: {type(file)}, file value: {file}")
+                if file:
+                    content_type, encoding = mimetypes.guess_type(file.name)
+                    email.attach(file.name, file.read(), content_type)
+                email.send()
+                print('email sent')
+                messages.success(request, ('VALID DEATH CERTIFICATE, ATTACHMENT SENT TO RELATIVES'))
+
+            else:
+                print('INVALID DEATH CERTIFICATE')
+                print(will.dc_text)
+                messages.success(request, ('INVALID DEATH CERTIFICATE'))
+                return redirect('usersaccess:home')
+
+            # return HttpResponse(text)
+            return redirect('usersaccess:home')
+    
+    return render(request, 'users_access/image_to_text.html')

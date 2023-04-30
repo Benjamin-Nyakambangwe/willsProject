@@ -56,6 +56,7 @@ class TestChange(models.Model):
     emails = models.TextField(blank=True, null=True)
     dc_image = models.ImageField(null=True, blank=True, upload_to=upload_to)
     dc_pdf = models.FileField(null=True, blank=True, upload_to=upload_to)
+    dc_text = models.TextField(null=True, blank=True)
     will_pdf = models.FileField(null=True, blank=True, upload_to=upload_to)
     will_owner_sign = models.CharField(max_length=200, blank=True, null=True)
     executor_sign = models.CharField(max_length=200, blank=True, null=True)

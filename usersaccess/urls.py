@@ -21,8 +21,7 @@ urlpatterns = [
     path('owner_sign', views.owner_sign_view, name='owner_sign'),
     path('executor_sign', views.executor_sign_view, name='executor_sign'),
     path('lawyer_sign/<id>', views.lawyer_sign_view, name='lawyer_sign'),
-
-
+    path('image_to_text/<id>', views.image_to_text, name='image_to_text'),
     path('lobby', views.new_lobby, name='lobby'),
 
 
