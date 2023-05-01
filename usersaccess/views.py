@@ -160,8 +160,8 @@ def edit_will_view(request, id):
     will = TestChange.objects.get(pk=id)
     form = newWillForm(request.POST or None, instance=will)
     if form.is_valid():
-        if will.will_owner_sign is not None:
-            return redirect('usersaccess:home')
+        # if will.will_owner_sign is not None:
+        #     return redirect('usersaccess:home')
         form.save() 
         if request.user.is_staff:
             mymodel = TestChange.objects.filter(lawyer=request.user)
@@ -191,8 +191,8 @@ def edit_own_will_view(request):
     will = TestChange.objects.get(will_owner=request.user)
     form = newWillForm(request.POST or None, instance=will)
     if form.is_valid():
-        if will.will_owner_sign is not None:
-            return redirect('usersaccess:home')
+        # if will.will_owner_sign is not None:
+        #     return redirect('usersaccess:home')
         form.save() 
         if request.user.is_staff:
             mymodel = TestChange.objects.filter(lawyer=request.user)
