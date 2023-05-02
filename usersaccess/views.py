@@ -274,9 +274,9 @@ def handleDC(request, id):
             email = EmailMessage(
             'Will Attachment',
             'Attached below is the will for your relative that just died',
-            'benjaminnyakambangwe@gmail.com',
+            'tbjenu@gmail.com',
             [email1, email2, email3],
-            reply_to=['benjaminnyakambngwe@gmail.com'],
+            reply_to=['tbjenu@gmail.com'],
         )
             file = will.will_pdf
             print(f"file type: {type(file)}, file value: {file}")
@@ -359,7 +359,7 @@ def scheduleCall(request, id):
             'Please attend the WILL review and sign on\t' + time + ' and use the room name\t' + room_name,
             'will',
             [emailAcc, emailAcc2],
-            reply_to=['benjaminnyakambngwe@gmail.com'],
+            reply_to=['tbjenu@gmail.com'],
         )
         email.send()
         print(will.will_owner.email)
@@ -473,9 +473,9 @@ def image_to_text(request, id):
                 email = EmailMessage(
                 'Will Attachment',
                 'Attached below is the will for your relative that just died',
-                'benjaminnyakambangwe@gmail.com',
+                'tbjenu@gmail.com',
                 [email1, email2, email3],
-                reply_to=['benjaminnyakambngwe@gmail.com'],
+                reply_to=['tbjenu@gmail.com'],
             )
                 file = will.will_pdf
                 print(f"file type: {type(file)}, file value: {file}")
